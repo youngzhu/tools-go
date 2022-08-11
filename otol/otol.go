@@ -14,11 +14,18 @@ import (
 // Obsidian to Logseq
 
 const (
-	dir    = "E:\\temp"
-	output = dir + "\\output"
+	dir      = "E:\\temp"
+	pages    = dir + "\\pages"
+	journals = dir + "\\journals"
 
 	suffix = ".md"
 )
+
+func init() {
+	// 必须先建目录
+	os.Mkdir(pages, 0777)
+	os.Mkdir(journals, 0777)
+}
 
 func main() {
 
@@ -27,31 +34,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// 必须先建目录
-	os.Mkdir(output, 0777)
-
 	for _, file := range fileInfos {
-		if file.IsDir() {
+		if file.IsDir() || !strings.HasSuffix(file.Name(), suffix) {
 			continue
 		}
 
 		fileName := strings.TrimSuffix(file.Name(), suffix)
 		log.Println(fileName)
 
-		newFileName := fileName
-
 		date, err := godate.Parse(fileName)
 		if err == nil {
-			newFileName = date.Format("2006_01_02")
+			newFileName := date.Format("2006_01_02")
+			CopyFile(dir+"\\"+fileName+suffix, journals+"\\"+newFileName+suffix)
+		} else {
+			CopyFile(dir+"\\"+file.Name(), pages+"\\"+file.Name())
 		}
-
-		CopyFile(dir+"\\"+fileName+suffix, output+"\\"+newFileName+suffix)
-
-		//upper2 = strings.ToUpper(fileName)
-		//
-		//if strings.Contains(upper2, upper1) {
-		//	log.Println(fileName)
-		//}
 
 	}
 }
