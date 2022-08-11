@@ -3,10 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/youngzhu/godate"
-	_ "github.com/youngzhu/godate"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 )
@@ -14,9 +12,11 @@ import (
 // Obsidian to Logseq
 
 const (
-	dir      = "E:\\temp"
-	pages    = dir + "\\pages"
-	journals = dir + "\\journals"
+	pathSeparator = string(os.PathSeparator)
+
+	dir      = "E:\\temp1"
+	pages    = dir + pathSeparator + "pages"
+	journals = dir + pathSeparator + "journals"
 
 	suffix = ".md"
 )
@@ -31,8 +31,11 @@ func main() {
 
 	fileInfos, err := ioutil.ReadDir(dir)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
+
+	counterJournals, counterPages := 0, 0
 
 	for _, file := range fileInfos {
 		if file.IsDir() || !strings.HasSuffix(file.Name(), suffix) {
@@ -40,17 +43,21 @@ func main() {
 		}
 
 		fileName := strings.TrimSuffix(file.Name(), suffix)
-		log.Println(fileName)
+		//log.Println(fileName)
 
 		date, err := godate.Parse(fileName)
 		if err == nil {
 			newFileName := date.Format("2006_01_02")
-			CopyFile(dir+"\\"+fileName+suffix, journals+"\\"+newFileName+suffix)
+			CopyFile(dir+pathSeparator+fileName+suffix, journals+pathSeparator+newFileName+suffix)
+			counterJournals++
 		} else {
-			CopyFile(dir+"\\"+file.Name(), pages+"\\"+file.Name())
+			CopyFile(dir+pathSeparator+file.Name(), pages+pathSeparator+file.Name())
+			counterPages++
 		}
 
 	}
+
+	fmt.Printf("%d Journals, %d Pages, total: %d", counterJournals, counterPages, counterJournals+counterPages)
 }
 
 func CopyFile(sourcePath, destPath string) error {
