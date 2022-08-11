@@ -10,6 +10,8 @@ import (
 )
 
 // Obsidian to Logseq
+// 日志文件重命名为：2021_07_01.md
+// pages直接复制
 
 const (
 	pathSeparator = string(os.PathSeparator)
