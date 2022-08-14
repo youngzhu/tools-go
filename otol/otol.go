@@ -16,7 +16,8 @@ import (
 const (
 	pathSeparator = string(os.PathSeparator)
 
-	dir      = "E:\\temp1"
+	//dir      = "E:\\temp1"
+	dir      = "/Users/youngz/FS/00-Temp/iJournal"
 	pages    = dir + pathSeparator + "pages"
 	journals = dir + pathSeparator + "journals"
 
@@ -50,10 +51,10 @@ func main() {
 		date, err := godate.Parse(fileName)
 		if err == nil {
 			newFileName := date.Format("2006_01_02")
-			CopyFile(dir+pathSeparator+fileName+suffix, journals+pathSeparator+newFileName+suffix)
+			MoveFile(dir+pathSeparator+fileName+suffix, journals+pathSeparator+newFileName+suffix)
 			counterJournals++
 		} else {
-			CopyFile(dir+pathSeparator+file.Name(), pages+pathSeparator+file.Name())
+			MoveFile(dir+pathSeparator+file.Name(), pages+pathSeparator+file.Name())
 			counterPages++
 		}
 
